@@ -1,10 +1,14 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"os"
 	"os/user"
+
+	"github.com/docker/docker/api/types/container"
+	"github.com/docker/docker/client"
 )
 
 func CurrentUser(name string) string {
@@ -31,4 +35,18 @@ func Getwd() string {
 func main() {
 	CurrentUser("Andrew")
 	Getwd()
+
+	cli, err := client.NewClientWithOpts(client.FromEnv)
+	if err != nil {
+		panic(err)
+	}
+
+	containers, err := cli.ContainerList(context.Background(), container.ListOptions{})
+	if err != nil {
+		panic(err)
+	}
+
+	for _, ctr := range containers {
+		fmt.Printf("%s %s\n", ctr.ID, ctr.Image)
+	}
 }
