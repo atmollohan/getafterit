@@ -1,10 +1,12 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"log"
 	"os"
 	"os/user"
+	"strings"
 )
 
 func currentUser() string {
@@ -28,7 +30,30 @@ func getWorkingDirectory() string {
 	return path
 }
 
+func printEnvVariables() string {
+	for _, env := range os.Environ() {
+		fmt.Println(env)
+	}
+	joinedEnv := strings.Join(os.Environ(), "\n")
+	return joinedEnv
+}
+
+
 func main() {
-	currentUser()
-	getWorkingDirectory()
+	command := flag.String("command", "user", "a string")
+	flag.Parse()
+	commandFlagMap:= map[string]func()string{
+		"printenv": printEnvVariables,
+		"pwd":  getWorkingDirectory,
+		"whoami": currentUser,
+	}
+	if command != nil {
+		if fn, ok := commandFlagMap[*command]; ok && fn != nil {
+			fn()
+		} else {
+			fmt.Println("Unknown command")
+		}
+	} else {
+		fmt.Println("No command provided")
+	}
 }
