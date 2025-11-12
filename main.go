@@ -7,6 +7,7 @@ import (
 	"os"
 	"os/user"
 	"strings"
+	"github.com/atmollohan/getafterit/internal/utils"
 )
 
 func currentUser() string {
@@ -38,6 +39,10 @@ func printEnvVariables() string {
 	return joinedEnv
 }
 
+func useUtils() {
+	utils.UtilFunction()
+}
+
 
 func main() {
 	command := flag.String("command", "user", "a string")
@@ -56,4 +61,6 @@ func main() {
 	} else {
 		fmt.Println("No command provided")
 	}
+	// for testing utils package
+	useUtils()
 }
